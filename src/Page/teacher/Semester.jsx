@@ -83,8 +83,8 @@ const Semester = () => {
             {
               message: lastSemester
                 ? `New semester must start after ${formatDate(
-                    lastSemester.endDate
-                  )}`
+                  lastSemester.endDate
+                )}`
                 : "Invalid start date",
             }
           ),
@@ -359,9 +359,8 @@ const Semester = () => {
           semesters.map((sem) => (
             <div
               key={sem._id}
-              className={`bg-white rounded-xl shadow-sm p-6 border space-y-4 ${
-                sem.isArchived ? "opacity-50" : ""
-              }`}
+              className={`bg-white rounded-xl shadow-sm p-6 border space-y-4 ${sem.isArchived ? "opacity-50" : ""
+                }`}
             >
               <div className="flex justify-between items-center">
                 <div>
@@ -410,9 +409,8 @@ const Semester = () => {
                 {sem.quarters.map((qtr) => (
                   <div
                     key={qtr._id}
-                    className={`flex justify-between items-center bg-gray-50 rounded-md px-4 py-3 border ${
-                      qtr.isArchived ? "opacity-50" : ""
-                    }`}
+                    className={`flex justify-between items-center bg-gray-50 rounded-md px-4 py-3 border ${qtr.isArchived ? "opacity-50" : ""
+                      }`}
                   >
                     <div>
                       <p className="font-medium text-gray-800">{qtr.title}</p>
@@ -525,13 +523,36 @@ const Semester = () => {
           </DialogHeader>
 
           {activeSemester && (
-            <p className="text-sm mb-1 text-gray-500">
-              Semester duration:{" "}
-              <strong>
-                {formatDate(activeSemester.startDate)} -{" "}
-                {formatDate(activeSemester.endDate)}
-              </strong>
-            </p>
+            <div className="space-y-1 mb-3">
+              <p className="text-sm text-gray-500">
+                Semester duration:{" "}
+                <strong>
+                  {formatDate(activeSemester.startDate)} -{" "}
+                  {formatDate(activeSemester.endDate)}
+                </strong>
+              </p>
+
+              {/* ✅ Show last quarter duration */}
+              {activeSemester.quarters.length > 0 && (
+                <p className="text-sm text-gray-500">
+                  Last quarter duration:{" "}
+                  <strong>
+                    {
+                      // Find last quarter
+                      (() => {
+                        const sortedQuarters = [...activeSemester.quarters].sort(
+                          (a, b) => new Date(a.startDate) - new Date(b.startDate)
+                        );
+                        const lastQtr = sortedQuarters[sortedQuarters.length - 1];
+                        return `${formatDate(lastQtr.startDate)} - ${formatDate(
+                          lastQtr.endDate
+                        )}`;
+                      })()
+                    }
+                  </strong>
+                </p>
+              )}
+            </div>
           )}
 
           <form
