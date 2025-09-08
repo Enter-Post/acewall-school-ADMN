@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { TeacherCard } from "@/CustomComponent/Card";
 import { axiosInstance } from "@/lib/AxiosInstance";
-import { Button } from "@/components/ui/button"; // Optional, for pagination buttons
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, Search } from "lucide-react";
 import BackButton from "@/CustomComponent/BackButton";
 
 const AllTeacher = () => {
@@ -11,11 +11,15 @@ const AllTeacher = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState(""); // committed search term
 
-  const fetchTeachers = async (pageNumber = 1) => {
+  const fetchTeachers = async (pageNumber = 1, searchQuery = "") => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get(`/admin/allTeacher?page=${pageNumber}&limit=6`);
+      const res = await axiosInstance.get(
+        `/admin/allTeacher?page=${pageNumber}&limit=6&search=${searchQuery}`
+      );
       const data = res.data;
       const rawTeachers = Array.isArray(data.teachers) ? data.teachers : [];
 
@@ -32,7 +36,9 @@ const AllTeacher = () => {
           email: t.email || "N/A",
           createdAt: t.joiningDate || new Date().toISOString(),
           courses: Array.from({ length: t.courses ?? 0 }),
-          profileImg: t.profileImg || `https://randomuser.me/api/portraits/lego/${i % 10}.jpg`,
+          profileImg:
+            t.profileImg ||
+            `https://randomuser.me/api/portraits/lego/${i % 10}.jpg`,
         };
       });
 
@@ -48,8 +54,14 @@ const AllTeacher = () => {
   };
 
   useEffect(() => {
-    fetchTeachers(page);
-  }, [page]);
+    fetchTeachers(page, query);
+  }, [page, query]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1); // reset pagination
+    setQuery(search.trim());
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -59,6 +71,23 @@ const AllTeacher = () => {
         All Teachers{" "}
         <span className="font-normal text-gray-500">({teachers.length})</span>
       </h1>
+
+      {/* 🔍 Search Input */}
+      <form
+        onSubmit={handleSearch}
+        className="flex items-center gap-2 mb-6 max-w-md"
+      >
+        <input
+          type="text"
+          placeholder="Search by name or email..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-acewall-main"
+        />
+        <Button type="submit" className="flex items-center gap-1">
+          <Search className="w-4 h-4" /> Search
+        </Button>
+      </form>
 
       {loading ? (
         <p className="text-gray-500">Loading teachers...</p>
@@ -74,6 +103,7 @@ const AllTeacher = () => {
             ))}
           </div>
 
+          {/* Pagination */}
           <div className="flex flex-col items-center mt-8 gap-4">
             <div className="flex gap-2">
               <Button
@@ -87,15 +117,20 @@ const AllTeacher = () => {
                 <button
                   key={pg}
                   onClick={() => setPage(pg)}
-                  className={`w-9 h-9 rounded-full border flex items-center justify-center text-sm font-medium transition-colors ${pg === page ? 'bg-acewall-main text-white' : 'bg-white text-gray-700'
-                    }`}
+                  className={`w-9 h-9 rounded-full border flex items-center justify-center text-sm font-medium transition-colors ${
+                    pg === page
+                      ? "bg-acewall-main text-white"
+                      : "bg-white text-gray-700"
+                  }`}
                 >
                   {pg}
                 </button>
               ))}
               <Button
                 variant="outline"
-                onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={page === totalPages}
               >
                 <ArrowRight className="w-4 h-4 mr-2" />

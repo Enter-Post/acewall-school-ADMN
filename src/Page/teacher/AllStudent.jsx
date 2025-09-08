@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { StudentCard } from "@/CustomComponent/Card";
 import { axiosInstance } from "@/lib/AxiosInstance";
-import { Button } from "@/components/ui/button"; // Assuming you're using shadcn/ui
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, Search } from "lucide-react";
 import BackButton from "@/CustomComponent/BackButton";
 
 const AllStudent = () => {
@@ -10,11 +10,15 @@ const AllStudent = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState(""); // committed search term
 
-  const fetchStudents = async (pageNumber = 1) => {
+  const fetchStudents = async (pageNumber = 1, searchQuery = "") => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get(`/admin/allStudent?page=${pageNumber}&limit=6`);
+      const res = await axiosInstance.get(
+        `/admin/allStudent?page=${pageNumber}&limit=6&search=${searchQuery}`
+      );
       const data = res.data;
 
       const rawStudents = Array.isArray(data.students) ? data.students : [];
@@ -32,7 +36,9 @@ const AllStudent = () => {
           email: s.email || "N/A",
           createdAt: s.joiningDate || new Date().toISOString(),
           numberOfCourses: s.numberOfCourses || 0,
-          profileImg: s.profileImg || `https://randomuser.me/api/portraits/lego/${i % 10}.jpg`,
+          profileImg:
+            s.profileImg ||
+            `https://randomuser.me/api/portraits/lego/${i % 10}.jpg`,
         };
       });
 
@@ -48,8 +54,14 @@ const AllStudent = () => {
   };
 
   useEffect(() => {
-    fetchStudents(page);
-  }, [page]);
+    fetchStudents(page, query);
+  }, [page, query]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1); // reset to first page when searching
+    setQuery(search.trim());
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -59,6 +71,24 @@ const AllStudent = () => {
         All Students{" "}
         <span className="font-normal text-gray-500">({students.length})</span>
       </h1>
+
+      {/* 🔍 Search Input */}
+      <form
+        onSubmit={handleSearch}
+        className="flex items-center gap-2 mb-6 max-w-md"
+      >
+        <input
+          type="text"
+          placeholder="Search by name or email..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-acewall-main"
+        />
+        <Button type="submit" className="flex items-center gap-1">
+          <Search className="w-4 h-4" /> Search
+        </Button>
+      </form>
+
       {loading ? (
         <p className="text-gray-500">Loading students...</p>
       ) : students.length === 0 ? (
@@ -85,15 +115,20 @@ const AllStudent = () => {
                 <button
                   key={pg}
                   onClick={() => setPage(pg)}
-                  className={`w-9 h-9 rounded-full border flex items-center justify-center text-sm font-medium transition-colors ${pg === page ? 'bg-acewall-main text-white' : 'bg-white text-gray-700'
-                    }`}
+                  className={`w-9 h-9 rounded-full border flex items-center justify-center text-sm font-medium transition-colors ${
+                    pg === page
+                      ? "bg-acewall-main text-white"
+                      : "bg-white text-gray-700"
+                  }`}
                 >
                   {pg}
                 </button>
               ))}
               <Button
                 variant="outline"
-                onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={page === totalPages}
               >
                 <ArrowRight className="w-4 h-4 mr-2" />

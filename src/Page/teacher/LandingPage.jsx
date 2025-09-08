@@ -68,7 +68,7 @@ const LandingPage = () => {
             <div>
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter user's email"
                 {...register("email")}
                 className="w-full p-4 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
