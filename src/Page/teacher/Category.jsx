@@ -119,15 +119,15 @@ const Category = () => {
         return updated;
       });
 
-      toast.success("Category deleted successfully");
+      toast.success("topic deleted successfully");
     } catch (error) {
       console.error("Delete error:", error);
-      const errorMessage =
-        error.response?.data?.message || "Failed to delete category";
+      const successMessage =
+        successMessage.response?.data?.message || " topic category";
 
       // Check for the specific error message about courses
-      if (errorMessage.includes("Category contains courses")) {
-        toast.error("Cannot delete category: It contains courses.");
+      if (errorMessage.includes("topic contains courses")) {
+        toast.error("Cannot delete topic: It contains courses.");
       } else {
         toast.error(errorMessage);
       }
