@@ -13,6 +13,7 @@ import {
   NotebookPen,
   User,
   ChartCandlestick,
+  Grid2x2,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { TeacherTopNavbarDropDown } from "@/CustomComponent/TeacherTopNavDropDown";
@@ -41,42 +42,43 @@ const sideBarTabs = [
   { id: 2, name: "All Courses", icon: <Book02Icon />, path: "/admin/courses" },
   {
     id: 3,
+    name: "Add User",
+    icon: <User />,
+    path: "/admin/landing",
+  },
+  {
+    id: 4,
     name: "Grade Scale",
     icon: <BookPlus />,
     path: "/admin/gradescale",
   },
 
   {
-    id: 4,
-    name: "Category",
-    icon: <Megaphone02Icon />,
+    id: 5,
+    name: "Topic",
+    icon: <Grid2x2 />,
     path: "/admin/Category",
   },
 
   {
-    id: 5,
+    id: 6,
     name: "Teachers",
     icon: <Users />,
     path: "/admin/allTeacher",
   },
   {
-    id: 6,
+    id: 7,
     name: "Students",
     icon: <GraduationCap />,
     path: "/admin/allStudent",
   },
   {
-    id: 7,
+    id: 8,
     name: "Semester",
     icon: <NotebookPen />,
     path: "/admin/Semester",
   },
-  {
-    id: 8,
-    name: "Add User",
-    icon: <User />,
-    path: "/admin/landing",
-  },
+  
   {
     id: 9,
     name: "Support",
@@ -84,13 +86,13 @@ const sideBarTabs = [
     path: "/admin/support",
   },
   {
-    id: 13,
+    id: 10,
     name: "GPA Scale",
     icon: <ChartCandlestick />,
     path: "/admin/GPA",
   },
   {
-    id: 10,
+    id: 11,
     name: "Newsletter",
     icon: <Mails />,
     path: "/admin/Newsletter",

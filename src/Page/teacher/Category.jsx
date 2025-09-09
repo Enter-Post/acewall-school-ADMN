@@ -141,22 +141,22 @@ const Category = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Categories</h1>
+        <h1 className="text-2xl font-semibold">Topics</h1>
 
         {/* Add Category Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2 bg-green-500 hover:bg-green-600">
               <Plus size={18} />
-              Add New Category
+              Add New Topic
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Category</DialogTitle>
+              <DialogTitle>Add New Topic</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <Label htmlFor="categoryName">Category Name</Label>
+              <Label htmlFor="categoryName">Topic Name</Label>
               <Input
                 id="categoryName"
                 value={newCategoryName}
@@ -167,7 +167,7 @@ const Category = () => {
                 onClick={handleAddCategory}
                 className="w-full bg-green-500 hover:bg-green-600"
               >
-                Add Category
+                Add Topic
               </Button>
             </div>
             {addError && <p className="text-red-500 text-sm">{addError}</p>}
@@ -178,7 +178,7 @@ const Category = () => {
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Category</DialogTitle>
+              <DialogTitle>Edit Topic</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <Label htmlFor="editCategory">New Title</Label>
@@ -208,15 +208,15 @@ const Category = () => {
             </div>
           ) : categories.length === 0 ? (
             <div className="text-center text-gray-500 py-8">
-              No categories found.
+              No Topics found.
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>#</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Subcategories</TableHead>
+                  <TableHead>Topics</TableHead>
+                  <TableHead>SubTopics</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -258,7 +258,7 @@ const Category = () => {
                         role="link"
                         tabIndex={0}
                       >
-                        Manage Subcategories
+                        Manage SubTopics
                       </Button>
                       <Button
                         variant="destructive"
