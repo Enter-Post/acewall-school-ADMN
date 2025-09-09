@@ -56,10 +56,19 @@ const LandingPage = () => {
 
   return (
     <>
-      <BackButton className="mb-10" />
+      <BackButton className="" />
 
-      <div className="min-h-screen flex items-center justify-center ">
-        <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+      <div className="relative  ">
+        {/* Top-right button */}
+        <div className=" p-6">
+          <button
+            onClick={() => navigate("/admin/bulksignup")}
+            className="absolute top-4 right-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition duration-200 z-10"
+          >
+            Upload Bulk Users
+          </button>
+        </div>
+        <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-xl border border-gray-200 mx-auto mt-10">
           <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">
             Create an Account
           </h1>
@@ -70,7 +79,7 @@ const LandingPage = () => {
                 type="email"
                 placeholder="Enter user's email"
                 {...register("email")}
-                className="w-full p-4 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full p-4 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -83,7 +92,7 @@ const LandingPage = () => {
                 control={control}
                 render={({ field }) => (
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="w-full p-4 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <SelectTrigger className="w-full p-4 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
                       <SelectValue placeholder="Select Role" />
                     </SelectTrigger>
                     <SelectContent>
@@ -108,7 +117,14 @@ const LandingPage = () => {
             </div>
           </form>
 
-
+          <div className="text-center mt-6">
+            <p className="text-sm text-gray-500">
+              Already have an account?{" "}
+              <Link to="/login" className="text-blue-600 hover:underline">
+                Login here
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </>

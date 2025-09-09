@@ -46,6 +46,7 @@ import CoursesBasis from "./Page/teacher/Courses/CoursesBasics";
 import CoursesChapter from "./Page/teacher/Courses/CourseChapters";
 import GpaScaleForm from "./Page/teacher/GPA/manageGPA";
 import ManageGpaScale from "./Page/teacher/GPA/createNewGPAScale";
+import BulkSignupPage from "./Page/teacher/BulkSignupPage";
 // import TeacherrAssessment from "./Page/teacher/TeacherAssignment";
 
 function App() {
@@ -126,6 +127,7 @@ function App() {
             <Route path="semester" element={<Semester />} />
             <Route path="signup" element={<SignupPage />}></Route>
             <Route path="landing" element={<LandingPage />} />
+            <Route path="bulksignup" element={<BulkSignupPage />} />
             <Route path="verifyOTP/:email" element={<VerifyOTP />} />
             <Route path="forgetPassword">
               <Route index element={<ForgetPassword />} />

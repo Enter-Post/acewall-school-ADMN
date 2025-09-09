@@ -74,7 +74,7 @@ const sideBarTabs = [
   },
   {
     id: 8,
-    name: "Semester",
+    name: "Grading Periods",
     icon: <NotebookPen />,
     path: "/admin/Semester",
   },

@@ -336,7 +336,7 @@ const Semester = () => {
       <header className="flex items-center justify-between border-b pb-4">
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
           <Calendar className="w-6 h-6 text-green-600" />
-          Semester Management
+          Grading Periods
         </h1>
         <Button
           onClick={() => {
