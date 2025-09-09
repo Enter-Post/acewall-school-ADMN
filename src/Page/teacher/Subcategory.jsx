@@ -178,7 +178,8 @@ const Subcategory = () => {
                 placeholder="e.g. Web Development"
               />
               {error && <p className="text-red-500 text-sm">{error}</p>}
-              <Button onClick={handleAddSubcategory} className="w-full">
+              <Button onClick={handleAddSubcategory} className="w-full bg-green-500 hover:bg-green-600"
+              >
                 Add
               </Button>
             </div>

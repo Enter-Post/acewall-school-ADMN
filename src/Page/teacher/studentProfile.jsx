@@ -32,7 +32,7 @@ export default function StudentProfile() {
         setLoading(false);
       }
     };
-    getUser();
+    getUser();  
   }, [id]);
 
   // Fetch enrolled courses

@@ -55,36 +55,38 @@ const Category = () => {
     fetchCategories();
   }, []);
 
-  const handleAddCategory = async () => {
-    if (!newCategoryName.trim()) {
-      setAddError("Category name cannot be empty");
-      return;
-    }
+const handleAddCategory = async () => {
+  if (!newCategoryName.trim()) {
+    setAddError("Category name cannot be empty");
+    return;
+  }
 
-    try {
-      const res = await axiosInstance.post("/category/create", {
-        title: newCategoryName.trim(),
-      });
+  try {
+    const res = await axiosInstance.post("/category/create", {
+      title: newCategoryName.trim(),
+    });
 
-      const newCat = res.data.category;
-      setCategories((prev) => [...prev, newCat]);
-      setSubCountMap((prev) => ({ ...prev, [newCat._id]: 0 }));
-      setNewCategoryName("");
-      setDialogOpen(false);
-      setAddError("");
-      setAddSuccsess("");
-    } catch (error) {
-      if (
-        error.response?.status === 400 ||
-        error.response?.status === 409 ||
-        error.response?.data?.message?.includes("already exists")
-      ) {
-        setAddError("Category already exists");
-      } else {
-        setAddSuccsess("Category added");
-      }
+    const newCat = res.data.category;
+    setCategories((prev) => [...prev, newCat]);
+    setSubCountMap((prev) => ({ ...prev, [newCat._id]: 0 }));
+    setNewCategoryName("");
+    setAddError("");
+    setAddSuccsess(""); // You might want to reset any success state here too
+  } catch (error) {
+    if (
+      error.response?.status === 400 ||
+      error.response?.status === 409 ||
+      error.response?.data?.message?.includes("already exists")
+    ) {
+      setAddError("Category already exists");
+    } else {
+      setAddSuccsess("Error adding category"); // You might want to handle this case too
     }
-  };
+  } finally {
+    setDialogOpen(false); // Ensure the modal closes in both success and error cases
+  }
+};
+
 
   const handleEditCategory = async () => {
     try {

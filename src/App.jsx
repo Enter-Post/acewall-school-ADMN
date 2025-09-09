@@ -117,6 +117,7 @@ function App() {
             <Route path="newsletter" element={<Newsletter />} />
             <Route path="allTeacher" element={<AllTeacher />} />
             <Route path="studentProfile/:id" element={<StudentProfile />} />
+            
             <Route path="teacherProfile/:id" element={<TeacherProfile />} />
             <Route path="account">
               <Route path=":id" element={<Account />} />
