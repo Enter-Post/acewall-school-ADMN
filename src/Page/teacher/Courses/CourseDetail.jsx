@@ -85,14 +85,11 @@ export default function TeacherCourseDetails() {
       .catch((err) => {
         console.log(err);
       });
-    // Set the course data in state
   };
 
   useEffect(() => {
     fetchCourseDetail();
-  }, [id]); // Added id as a dependency to refetch when the id changes
-
-  // console.log(course?.semester, "course?.semester");
+  }, [id]); 
 
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
@@ -270,14 +267,24 @@ export default function TeacherCourseDetails() {
             >
               Preview as a student
             </button>
-            {/* <button
+
+
+
+
+
+            <button
               variant="outline"
               className="flex gap-2 items-center bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
-              onClick={() => navigate(`/teacher/gradebook/${id}`)}
+              onClick={() => navigate(`/admin/gradebook/${id}`)}
             >
               <BookPlus size={16} />
               Gradebook
-            </button> */}
+            </button>
+
+
+
+
+            
             <button
               variant="outline"
               className="flex gap-2 items-center bg-slate-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
@@ -299,7 +306,7 @@ export default function TeacherCourseDetails() {
           <StatCard
             icon={<ChartBarStacked className="h-5 w-5 text-orange-500" />}
             value={course.category?.title?.toUpperCase()}
-            label="Category"
+            label="Topic"
             bgColor="bg-slate-100 hover:bg-slate-200"
           />
 
@@ -342,15 +349,7 @@ export default function TeacherCourseDetails() {
             </div>
           </Link>
         ))}
-        {/* <div className="flex gap-4">
-          <Pages />
-          <button
-            onClick={() => navigate(`/teacher/courses/${id}/posts`)} // dynamic course ID
-            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-          >
-            View Course Posts
-          </button>
-        </div> */}
+      
         {/* Final Assessment Cards */}
         {Array.isArray(course.Assessments) &&
           course.CourseAssessments.map((assessment) => (

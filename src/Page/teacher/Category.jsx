@@ -55,36 +55,38 @@ const Category = () => {
     fetchCategories();
   }, []);
 
-  const handleAddCategory = async () => {
-    if (!newCategoryName.trim()) {
-      setAddError("Category name cannot be empty");
-      return;
-    }
+const handleAddCategory = async () => {
+  if (!newCategoryName.trim()) {
+    setAddError("Category name cannot be empty");
+    return;
+  }
 
-    try {
-      const res = await axiosInstance.post("/category/create", {
-        title: newCategoryName.trim(),
-      });
+  try {
+    const res = await axiosInstance.post("/category/create", {
+      title: newCategoryName.trim(),
+    });
 
-      const newCat = res.data.category;
-      setCategories((prev) => [...prev, newCat]);
-      setSubCountMap((prev) => ({ ...prev, [newCat._id]: 0 }));
-      setNewCategoryName("");
-      setDialogOpen(false);
-      setAddError("");
-      setAddSuccsess("");
-    } catch (error) {
-      if (
-        error.response?.status === 400 ||
-        error.response?.status === 409 ||
-        error.response?.data?.message?.includes("already exists")
-      ) {
-        setAddError("Category already exists");
-      } else {
-        setAddSuccsess("Category added");
-      }
+    const newCat = res.data.category;
+    setCategories((prev) => [...prev, newCat]);
+    setSubCountMap((prev) => ({ ...prev, [newCat._id]: 0 }));
+    setNewCategoryName("");
+    setAddError("");
+    setAddSuccsess(""); // You might want to reset any success state here too
+  } catch (error) {
+    if (
+      error.response?.status === 400 ||
+      error.response?.status === 409 ||
+      error.response?.data?.message?.includes("already exists")
+    ) {
+      setAddError("Category already exists");
+    } else {
+      setAddSuccsess("Error adding category"); // You might want to handle this case too
     }
-  };
+  } finally {
+    setDialogOpen(false); // Ensure the modal closes in both success and error cases
+  }
+};
+
 
   const handleEditCategory = async () => {
     try {
@@ -119,15 +121,15 @@ const Category = () => {
         return updated;
       });
 
-      toast.success("Category deleted successfully");
+      toast.success("topic deleted successfully");
     } catch (error) {
       console.error("Delete error:", error);
-      const errorMessage =
-        error.response?.data?.message || "Failed to delete category";
+      const successMessage =
+        successMessage.response?.data?.message || " topic category";
 
       // Check for the specific error message about courses
-      if (errorMessage.includes("Category contains courses")) {
-        toast.error("Cannot delete category: It contains courses.");
+      if (errorMessage.includes("topic contains courses")) {
+        toast.error("Cannot delete topic: It contains courses.");
       } else {
         toast.error(errorMessage);
       }
@@ -141,22 +143,22 @@ const Category = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Categories</h1>
+        <h1 className="text-2xl font-semibold">Topics</h1>
 
         {/* Add Category Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2 bg-green-500 hover:bg-green-600">
               <Plus size={18} />
-              Add New Category
+              Add New Topic
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Category</DialogTitle>
+              <DialogTitle>Add New Topic</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <Label htmlFor="categoryName">Category Name</Label>
+              <Label htmlFor="categoryName">Topic Name</Label>
               <Input
                 id="categoryName"
                 value={newCategoryName}
@@ -167,7 +169,7 @@ const Category = () => {
                 onClick={handleAddCategory}
                 className="w-full bg-green-500 hover:bg-green-600"
               >
-                Add Category
+                Add Topic
               </Button>
             </div>
             {addError && <p className="text-red-500 text-sm">{addError}</p>}
@@ -178,7 +180,7 @@ const Category = () => {
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Category</DialogTitle>
+              <DialogTitle>Edit Topic</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <Label htmlFor="editCategory">New Title</Label>
@@ -208,15 +210,15 @@ const Category = () => {
             </div>
           ) : categories.length === 0 ? (
             <div className="text-center text-gray-500 py-8">
-              No categories found.
+              No Topics found.
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>#</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Subcategories</TableHead>
+                  <TableHead>Topics</TableHead>
+                  <TableHead>SubTopics</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -258,7 +260,7 @@ const Category = () => {
                         role="link"
                         tabIndex={0}
                       >
-                        Manage Subcategories
+                        Manage SubTopics
                       </Button>
                       <Button
                         variant="destructive"

@@ -154,7 +154,7 @@ const Subcategory = () => {
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">
-          Subcategories for: {decodeURIComponent(categoryName)}
+          SubTopics for: {decodeURIComponent(categoryName)}
         </h1>
 
         {/* Add Subcategory Dialog */}
@@ -162,15 +162,15 @@ const Subcategory = () => {
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus size={18} />
-              Add Sub Category
+              Add SubTopic
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add Sub Category</DialogTitle>
+              <DialogTitle>Add SubTopic</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <Label htmlFor="subcategory">Sub Category Name</Label>
+              <Label htmlFor="subcategory">SubTopic Name</Label>
               <Input
                 id="subcategory"
                 value={newSub}
@@ -178,7 +178,8 @@ const Subcategory = () => {
                 placeholder="e.g. Web Development"
               />
               {error && <p className="text-red-500 text-sm">{error}</p>}
-              <Button onClick={handleAddSubcategory} className="w-full">
+              <Button onClick={handleAddSubcategory} className="w-full bg-green-500 hover:bg-green-600"
+              >
                 Add
               </Button>
             </div>
@@ -189,10 +190,10 @@ const Subcategory = () => {
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Sub Category</DialogTitle>
+              <DialogTitle>Edit SubTopic</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <Label htmlFor="edit-subcategory">Sub Category Name</Label>
+              <Label htmlFor="edit-subcategory">SubTopic Name</Label>
               <Input
                 id="edit-subcategory"
                 value={editData.title}
@@ -216,7 +217,7 @@ const Subcategory = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Serial Number</TableHead>
-                <TableHead>Sub Category</TableHead>
+                <TableHead>SubTopic</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -249,7 +250,7 @@ const Subcategory = () => {
               {subcategories.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={3} className="text-center text-gray-500">
-                    No subcategories found.
+                    No subTopics found.
                   </TableCell>
                 </TableRow>
               )}

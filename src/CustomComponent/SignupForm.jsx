@@ -137,7 +137,9 @@ const SignupForm = () => {
           </h1>
 
           <h2 className="mb-2 font-medium text-gray-900 dark:text-white">
-            {steps[currentStep]}
+            {/* {steps[currentStep]}  */}
+            User's Information
+
           </h2>
 
           <FormProvider {...methods}>
