@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "./Page/Login";
 import Support from "./Page/Support";
-// import GeneralCoursesDetail from "./Page/teacher/Courses/GeneralCourseDetail";
 import TeacherDashboard from "./Page/teacher/Dashboard";
 import TeacherLayout from "./Page/teacher/Layout";
 import AllStudent from "./Page/teacher/AllStudent";
@@ -47,7 +46,7 @@ import CoursesChapter from "./Page/teacher/Courses/CourseChapters";
 import GpaScaleForm from "./Page/teacher/GPA/manageGPA";
 import ManageGpaScale from "./Page/teacher/GPA/createNewGPAScale";
 import BulkSignupPage from "./Page/teacher/BulkSignupPage";
-// import TeacherrAssessment from "./Page/teacher/TeacherAssignment";
+import CourseGradebook from "./CustomComponent/teacher/CourseGradebook";
 
 function App() {
   const { checkAuth, user, Authloading, socket, setSocket, setOnlineUser } =
@@ -117,7 +116,7 @@ function App() {
             <Route path="newsletter" element={<Newsletter />} />
             <Route path="allTeacher" element={<AllTeacher />} />
             <Route path="studentProfile/:id" element={<StudentProfile />} />
-            
+
             <Route path="teacherProfile/:id" element={<TeacherProfile />} />
             <Route path="account">
               <Route path=":id" element={<Account />} />
@@ -158,6 +157,11 @@ function App() {
               />
             </Route>
 
+            <Route
+              path="gradebook/:courseId"
+              element={<CourseGradebook />}
+            />
+
             <Route path="courses">
               <Route index element={<TeacherCourses />} />
               <Route
@@ -178,6 +182,8 @@ function App() {
                 path="assessment/:assessmentid"
                 element={<AssessmentPage />}
               />
+
+
               <Route path="stdPreview/:id" element={<StdPreview />} />
               <Route path="createCourses">
                 <Route index element={<CoursesBasis />} />
