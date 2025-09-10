@@ -223,10 +223,12 @@ const StdPreview = () => {
                                         Description
                                       </span>
                                       {lesson.description && (
-                                        <p className="text-sm text-gray-700 leading-relaxed">
-                                          {" "}
-                                          {lesson.description}
-                                        </p>
+                                        <p
+                                          className="text-sm text-gray-700 leading-relaxed"
+                                          dangerouslySetInnerHTML={{
+                                            __html: lesson.description,
+                                          }}
+                                        />
                                       )}
 
                                       {lesson.youtubeLinks && (
