@@ -73,23 +73,29 @@ const SignupForm = () => {
   const formData = watch(); // Get current form data
 
   const onSubmit = async (formdata) => {
-  const completeData = { ...signUpdata, ...formdata };
+    const completeData = { ...signUpdata, ...formdata };
 
-  setAuthLoading(true);
-  try {
-    const res = await axiosInstance.post("auth/registerwithoutOTP", completeData);
+    setAuthLoading(true);
+    try {
+      const res = await axiosInstance.post("auth/registerwithoutOTP", completeData);
 
-    toast.success(res.data.message);
+      // toast.success(res.data.message);
+      // toast.success(success.response?.data?.message || "Something went wrong.");
+      toast.success(res.data?.message || "User created successfully");
 
-    // Redirect to dashboard, login, or any landing page after successful signup
-    navigate("/admin/landing"); // or "/dashboard" or wherever you want to go
+      console.log("user created successfully");
+      
 
-  } catch (error) {
-    toast.error(error.response?.data?.message || "Something went wrong.");
-  } finally {
-    setAuthLoading(false);
-  }
-};
+
+      // Redirect to dashboard, login, or any landing page after successful signup
+      navigate("/admin/landing"); // or "/dashboard" or wherever you want to go
+
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong.");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
 
 
   const handleNext = async () => {
@@ -127,75 +133,74 @@ const SignupForm = () => {
   };
 
   return (
-  <section>
-  <div className="bg-black/50 backdrop-blur-md h-screen">
-    <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <div className="w-full bg-white border border-gray-300 rounded-lg shadow-md sm:max-w-2xl dark:bg-gray-800 dark:border-gray-700">
-        <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
-            Create an account
-          </h1>
+    <section>
+      <div className="bg-black/50 backdrop-blur-md h-screen">
+        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+          <div className="w-full bg-white border border-gray-300 rounded-lg shadow-md sm:max-w-2xl dark:bg-gray-800 dark:border-gray-700">
+            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
+                Create an account
+              </h1>
 
-          <h2 className="mb-2 font-medium text-gray-900 dark:text-white">
-            {/* {steps[currentStep]}  */}
-            User's Information
+              <h2 className="mb-2 font-medium text-gray-900 dark:text-white">
+                {/* {steps[currentStep]}  */}
+                User's Information
 
-          </h2>
+              </h2>
 
-          <FormProvider {...methods}>
-            <form
-              className="space-y-4 md:space-y-6"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              {renderStep()}
-
-              <div className="flex justify-between">
-                {/* Previous Button */}
-                <button
-                  onClick={handlePrevious}
-                  type="button"
-                  className={`text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 ${
-                    currentStep === 0 ? "invisible" : ""
-                  }`}
+              <FormProvider {...methods}>
+                <form
+                  className="space-y-4 md:space-y-6"
+                  onSubmit={handleSubmit(onSubmit)}
                 >
-                  Previous
-                </button>
+                  {renderStep()}
 
-                {/* Next or Submit Button */}
-                {currentStep === steps.length - 1 ? (
-                  <button
-                    type="submit"
-                    className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5"
-                  >
-                    Create Account
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5"
-                  >
-                    Next
-                  </button>
-                )}
-              </div>
-            </form>
-          </FormProvider>
+                  <div className="flex justify-between">
+                    {/* Previous Button */}
+                    <button
+                      onClick={handlePrevious}
+                      type="button"
+                      className={`text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 ${currentStep === 0 ? "invisible" : ""
+                        }`}
+                    >
+                      Previous
+                    </button>
 
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-            >
-              Login here
-            </Link>
-          </p>
+                    {/* Next or Submit Button */}
+                    {currentStep === steps.length - 1 ? (
+                      <button
+                        type="submit"
+                        className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5"
+                      >
+                        Create Account
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5"
+                      >
+                        Next
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </FormProvider>
+
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                >
+                  Login here
+                </Link>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
   );
 };
