@@ -23,7 +23,7 @@ import Newsletter from "./Page/teacher/Newsletter";
 import ManageGradeScale from "./Page/manageGradeScale";
 import GradeScaleForm from "./Page/GradeScale";
 import Semester from "./Page/teacher/Semester";
-import LandingPage from "./Page/teacher/LandingPage";
+// import LandingPage from "./Page/teacher/LandingPage";
 import VerifyOTP from "./Page/teacher/VerifyOTP";
 import ForgetPassword from "./Page/teacher/forgetPassword";
 import VerifyForgetPasswordOTP from "./Page/teacher/VerifyForgetPasswordOTP";
@@ -126,7 +126,7 @@ function App() {
             <Route path="support" element={<Support />} />
             <Route path="semester" element={<Semester />} />
             <Route path="signup" element={<SignupPage />}></Route>
-            <Route path="landing" element={<LandingPage />} />
+            {/* <Route path="landing" element={<LandingPage />} /> */}
             <Route path="bulksignup" element={<BulkSignupPage />} />
             <Route path="verifyOTP/:email" element={<VerifyOTP />} />
             <Route path="forgetPassword">

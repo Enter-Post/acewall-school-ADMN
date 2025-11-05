@@ -44,7 +44,7 @@ const sideBarTabs = [
     id: 3,
     name: "Add User",
     icon: <User />,
-    path: "/admin/landing",
+    path: "/admin/signup",
   },
   {
     id: 4,

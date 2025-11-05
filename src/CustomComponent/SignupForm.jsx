@@ -1,44 +1,38 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PersonalInfo from "./StudentSignup/PersonalInfo";
-import ContactInfo from "./ContactInfo";
-import AddressInfo from "./StudentSignup/AddressInfo";
-import PasswordInfo from "./StudentSignup/PasswordInfo";
 import { z } from "zod";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { GlobalContext } from "@/Context/GlobalProvider";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Eye, EyeClosed } from "lucide-react";
+import BackButton from "@/CustomComponent/BackButton";
 
-const steps = ["Personal Information", "Address Information", "Password Info"];
-
-// Update password validation schema in zod
-const formSchema = z
+const schema = z
   .object({
-    firstName: z.string().min(1, "First name is required"),
+    firstName: z.string().min(2, "First name is required"),
     middleName: z.string().optional(),
-    lastName: z.string().min(1, "Last name is required"),
-    phone: z.string().min(10, "Phone number is required"),
-    homeAddress: z.string().optional(),
-    mailingAddress: z.string().optional(),
+    lastName: z.string().min(2, "Last name is required"),
+    email: z.string().email("Invalid email address"),
+    role: z.enum(["student", "teacher"], {
+      required_error: "Please select a role",
+    }),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
-      .regex(
-        /^(?=.*[A-Z])/,
-        "Password must contain at least one uppercase letter"
-      )
-      .regex(
-        /^(?=.*[a-z])/,
-        "Password must contain at least one lowercase letter"
-      )
-      .regex(/^(?=.*\d)/, "Password must contain at least one number")
-      .regex(
-        /^(?=.*[#?!@$%^&*-])/,
-        "Password must contain at least one special character"
-      )
-      .regex(/^(?!.*\s).*$/, "Password cannot contain spaces"),
+      .regex(/^(?=.*[A-Z])/, "At least one uppercase letter")
+      .regex(/^(?=.*[a-z])/, "At least one lowercase letter")
+      .regex(/^(?=.*\d)/, "At least one number")
+      .regex(/^(?=.*[#?!@$%^&*-])/, "At least one special character")
+      .regex(/^(?!.*\s).*$/, "No spaces allowed"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -46,163 +40,233 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-const SignupForm = () => {
+const SignupPage = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
+  const { setAuthLoading } = useContext(GlobalContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {
-    signUpdata,
-    setSignupData,
-    signup,
-    setUser,
-    Authloading,
-    setAuthLoading,
-  } = useContext(GlobalContext);
-  const methods = useForm({
-    resolver: zodResolver(formSchema),
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
     mode: "onTouched",
+    defaultValues: {
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      email: "",
+      role: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
-  useEffect(() => {
-    if (signUpdata.email === undefined && signUpdata.role === undefined) {
-      navigate("/");
-    }
-  }, []);
-
-  const { handleSubmit, trigger, setValue, watch } = methods;
-
-  const formData = watch(); // Get current form data
-
-  const onSubmit = async (formdata) => {
-    const completeData = { ...signUpdata, ...formdata };
-
+  const onSubmit = async (data) => {
+    const { confirmPassword, ...userData } = data; // Remove confirmPassword before sending
     setAuthLoading(true);
     try {
-      const res = await axiosInstance.post("auth/registerwithoutOTP", completeData);
-
-      // toast.success(res.data.message);
-      // toast.success(success.response?.data?.message || "Something went wrong.");
-      toast.success(res.data?.message || "User created successfully");
-
-      console.log("user created successfully");
-      
-
-
-      // Redirect to dashboard, login, or any landing page after successful signup
-      navigate("/admin/landing"); // or "/dashboard" or wherever you want to go
-
+      const res = await axiosInstance.post("auth/registerwithoutOTP", userData);
+      toast.success(res.data?.message || "Account created successfully");
+      navigate("/admin/signup");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong.");
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setAuthLoading(false);
     }
   };
 
-
-  const handleNext = async () => {
-    const fieldsToValidate = {
-      0: ["firstName", "lastName", "phone"],
-      1: ["homeAddress", "mailingAddress"],
-      2: ["password", "confirmPassword"],
-    }[currentStep];
-
-    const valid = await trigger(fieldsToValidate);
-
-    if (valid) {
-      setCurrentStep((prev) => prev + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    setCurrentStep((prev) => {
-      const previousStep = prev - 1;
-      return previousStep;
-    });
-  };
-
-  const renderStep = () => {
-    switch (currentStep) {
-      case 0:
-        return <PersonalInfo />;
-      case 1:
-        return <AddressInfo />;
-      case 2:
-        return <PasswordInfo />;
-      default:
-        return null;
-    }
-  };
-
   return (
-    <section>
-      <div className="bg-black/50 backdrop-blur-md h-screen">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="w-full bg-white border border-gray-300 rounded-lg shadow-md sm:max-w-2xl dark:bg-gray-800 dark:border-gray-700">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
-                Create an account
-              </h1>
+    <>
+      <BackButton className="" />
 
-              <h2 className="mb-2 font-medium text-gray-900 dark:text-white">
-                {/* {steps[currentStep]}  */}
-                User's Information
+      <div className="relative min-h-screen flex items-center justify-center bg-gray-50">
+        {/* Upload bulk users button */}
+        <div className="absolute top-6 right-6">
+          <button
+            onClick={() => navigate("/admin/bulksignup")}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition duration-200"
+          >
+            Upload Bulk Users
+          </button>
+        </div>
 
-              </h2>
+        <div className="w-full max-w-lg bg-white border border-gray-200 rounded-lg shadow-lg p-8">
+          <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">
+            Create an Account
+          </h1>
 
-              <FormProvider {...methods}>
-                <form
-                  className="space-y-4 md:space-y-6"
-                  onSubmit={handleSubmit(onSubmit)}
-                >
-                  {renderStep()}
-
-                  <div className="flex justify-between">
-                    {/* Previous Button */}
-                    <button
-                      onClick={handlePrevious}
-                      type="button"
-                      className={`text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 ${currentStep === 0 ? "invisible" : ""
-                        }`}
-                    >
-                      Previous
-                    </button>
-
-                    {/* Next or Submit Button */}
-                    {currentStep === steps.length - 1 ? (
-                      <button
-                        type="submit"
-                        className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5"
-                      >
-                        Create Account
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={handleNext}
-                        className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5"
-                      >
-                        Next
-                      </button>
-                    )}
-                  </div>
-                </form>
-              </FormProvider>
-
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Already have an account?{" "}
-                <Link
-                  to="/login"
-                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                >
-                  Login here
-                </Link>
-              </p>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {/* First Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                First Name
+              </label>
+              <input
+                type="text"
+                {...register("firstName")}
+                placeholder="Enter first name"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              {errors.firstName && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.firstName.message}
+                </p>
+              )}
             </div>
-          </div>
+
+            {/* Middle Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Middle Name (Optional)
+              </label>
+              <input
+                type="text"
+                {...register("middleName")}
+                placeholder="Enter middle name"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Last Name
+              </label>
+              <input
+                type="text"
+                {...register("lastName")}
+                placeholder="Enter last name"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              {errors.lastName && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.lastName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                type="email"
+                {...register("email")}
+                placeholder="Enter email"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            {/* Role */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Select Role
+              </label>
+              <Controller
+                name="role"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-full p-3 border border-gray-300 rounded-lg">
+                      <SelectValue placeholder="Choose a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="student">Student</SelectItem>
+                      <SelectItem value="teacher">Teacher</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.role && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.role.message}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                placeholder="Enter password"
+                className="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-9 text-gray-500"
+              >
+                {showPassword ? <Eye size={18} /> : <EyeClosed size={18} />}
+              </button>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                {...register("confirmPassword")}
+                placeholder="Re-enter password"
+                className="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="absolute right-3 top-9 text-gray-500"
+              >
+                {showConfirmPassword ? (
+                  <Eye size={18} />
+                ) : (
+                  <EyeClosed size={18} />
+                )}
+              </button>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-200"
+            >
+              Create Account
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-gray-500 mt-4">
+            Already have an account?{" "}
+            <Link to="/login" className="text-green-600 hover:underline">
+              Login here
+            </Link>
+          </p>
         </div>
       </div>
-    </section>
-
+    </>
   );
 };
 
-export default SignupForm;
+export default SignupPage;
