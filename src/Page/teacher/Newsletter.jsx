@@ -56,14 +56,12 @@ const Newsletter = () => {
         <table className="min-w-full bg-white">
           <thead>
             <tr className="bg-gray-100">
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">ID</th>
               <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Email</th>
             </tr>
           </thead>
           <tbody>
             {subscribers.map((subscriber) => (
               <tr key={subscriber._id} className="border-t hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm text-gray-900">{subscriber._id}</td>
                 <td className="px-6 py-4 text-sm text-gray-900">{subscriber.email}</td>
               </tr>
             ))}

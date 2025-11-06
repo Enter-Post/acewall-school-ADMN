@@ -23,7 +23,7 @@ import Newsletter from "./Page/teacher/Newsletter";
 import ManageGradeScale from "./Page/manageGradeScale";
 import GradeScaleForm from "./Page/GradeScale";
 import Semester from "./Page/teacher/Semester";
-import LandingPage from "./Page/teacher/LandingPage";
+// import LandingPage from "./Page/teacher/LandingPage";
 import VerifyOTP from "./Page/teacher/VerifyOTP";
 import ForgetPassword from "./Page/teacher/forgetPassword";
 import VerifyForgetPasswordOTP from "./Page/teacher/VerifyForgetPasswordOTP";
@@ -47,6 +47,7 @@ import GpaScaleForm from "./Page/teacher/GPA/manageGPA";
 import ManageGpaScale from "./Page/teacher/GPA/createNewGPAScale";
 import BulkSignupPage from "./Page/teacher/BulkSignupPage";
 import CourseGradebook from "./CustomComponent/teacher/CourseGradebook";
+import SocialMain from "./Page/teacher/SocialMain";
 
 function App() {
   const { checkAuth, user, Authloading, socket, setSocket, setOnlineUser } =
@@ -113,6 +114,7 @@ function App() {
             <Route path="category" element={<Category />} />
             <Route path="subcategory/:categoryName" element={<Subcategory />} />
             <Route path="allStudent" element={<AllStudent />} />
+             <Route path="social" element={<SocialMain />} />
             <Route path="newsletter" element={<Newsletter />} />
             <Route path="allTeacher" element={<AllTeacher />} />
             <Route path="studentProfile/:id" element={<StudentProfile />} />
@@ -126,7 +128,7 @@ function App() {
             <Route path="support" element={<Support />} />
             <Route path="semester" element={<Semester />} />
             <Route path="signup" element={<SignupPage />}></Route>
-            <Route path="landing" element={<LandingPage />} />
+            {/* <Route path="landing" element={<LandingPage />} /> */}
             <Route path="bulksignup" element={<BulkSignupPage />} />
             <Route path="verifyOTP/:email" element={<VerifyOTP />} />
             <Route path="forgetPassword">
