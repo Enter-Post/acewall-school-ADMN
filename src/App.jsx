@@ -47,6 +47,7 @@ import GpaScaleForm from "./Page/teacher/GPA/manageGPA";
 import ManageGpaScale from "./Page/teacher/GPA/createNewGPAScale";
 import BulkSignupPage from "./Page/teacher/BulkSignupPage";
 import CourseGradebook from "./CustomComponent/teacher/CourseGradebook";
+import SocialMain from "./Page/teacher/SocialMain";
 
 function App() {
   const { checkAuth, user, Authloading, socket, setSocket, setOnlineUser } =
@@ -113,6 +114,7 @@ function App() {
             <Route path="category" element={<Category />} />
             <Route path="subcategory/:categoryName" element={<Subcategory />} />
             <Route path="allStudent" element={<AllStudent />} />
+             <Route path="social" element={<SocialMain />} />
             <Route path="newsletter" element={<Newsletter />} />
             <Route path="allTeacher" element={<AllTeacher />} />
             <Route path="studentProfile/:id" element={<StudentProfile />} />

@@ -14,6 +14,7 @@ import {
   User,
   ChartCandlestick,
   Grid2x2,
+  Coffee,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { TeacherTopNavbarDropDown } from "@/CustomComponent/TeacherTopNavDropDown";
@@ -93,6 +94,11 @@ const sideBarTabs = [
   },
   {
     id: 11,
+    name: "Spill the Tea",
+    icon: <Coffee />,
+    path: "/admin/social",
+  },{
+    id: 12,
     name: "Newsletter",
     icon: <Mails />,
     path: "/admin/Newsletter",
