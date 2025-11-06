@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const CommentSection = ({ post, setPosts }) => {
   const [comment, setComment] = useState("");
@@ -14,6 +15,7 @@ const CommentSection = ({ post, setPosts }) => {
       name: "You",
       text: trimmed,
       time: "Just now",
+      profileImg: "", // can be left empty or filled when integrated with backend user info
     };
 
     setPosts((prev) =>
@@ -26,14 +28,14 @@ const CommentSection = ({ post, setPosts }) => {
 
     setComment("");
 
-    // Animate comment count bounce
+    // 🔹 Animate comment count bounce
     gsap.fromTo(
       `#comment-count-${post.id}`,
       { scale: 1 },
       { scale: 1.25, duration: 0.25, ease: "elastic.out(1,0.5)", yoyo: true, repeat: 1 }
     );
 
-    // Animate new comment appearance
+    // 🔹 Animate new comment appearance
     setTimeout(() => {
       if (lastCommentRef.current) {
         gsap.fromTo(
@@ -48,12 +50,23 @@ const CommentSection = ({ post, setPosts }) => {
           }
         );
       }
-    }, 50); // slight delay to ensure DOM renders first
+    }, 50);
+  };
+
+  // 🔹 Helper to get initials from name
+  const getInitials = (name) => {
+    if (!name) return "👤";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (
     <div className="mt-3">
-      {/* Comments List */}
+      {/* 💬 Comments List */}
       <div className="flex flex-col gap-2 text-sm">
         {post.comments.map((c, idx) => (
           <div
@@ -61,11 +74,19 @@ const CommentSection = ({ post, setPosts }) => {
             ref={idx === post.comments.length - 1 ? lastCommentRef : null}
             className="flex items-start gap-2"
           >
-            <img
-              src={`https://i.pravatar.cc/40?img=${(c.id % 70) + 1}`}
-              alt={c.name}
-              className="w-6 h-6 rounded-full"
-            />
+            <Avatar className="w-6 h-6">
+              <AvatarImage
+                src={
+                  c.profileImg ||
+                  `https://i.pravatar.cc/40?img=${(c.id % 70) + 1}`
+                }
+                alt={c.name}
+              />
+              <AvatarFallback className="text-[10px] bg-gray-200 text-gray-600">
+                {getInitials(c.name)}
+              </AvatarFallback>
+            </Avatar>
+
             <div className="bg-gray-100 px-3 py-1.5 rounded-lg max-w-sm">
               <p className="font-semibold text-xs">{c.name}</p>
               <p className="text-sm">{c.text}</p>
@@ -75,13 +96,15 @@ const CommentSection = ({ post, setPosts }) => {
         ))}
       </div>
 
-      {/* Input Box */}
+      {/* ✏️ Input Box */}
       <div className="mt-3 flex items-center gap-2">
-        <img
-          src="https://i.pravatar.cc/40?img=10"
-          alt="User"
-          className="w-7 h-7 rounded-full"
-        />
+        <Avatar className="w-7 h-7">
+          <AvatarImage src="https://i.pravatar.cc/40?img=10" alt="User" />
+          <AvatarFallback className="text-[10px] bg-gray-200 text-gray-600">
+            Y
+          </AvatarFallback>
+        </Avatar>
+
         <input
           value={comment}
           onChange={(e) => setComment(e.target.value)}
