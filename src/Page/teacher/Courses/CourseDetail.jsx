@@ -81,6 +81,8 @@ export default function TeacherCourseDetails() {
       .then((res) => {
         setCourse(res.data.course);
         setQuarters(res.data.course.quarter);
+
+        console.log("course data",res.data.course.enrollments)
       })
       .catch((err) => {
         console.log(err);
