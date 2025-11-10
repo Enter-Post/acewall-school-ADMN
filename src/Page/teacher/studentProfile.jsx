@@ -17,14 +17,16 @@ export default function StudentProfile() {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false); // NEW
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Fetch student info
   useEffect(() => {
     const getUser = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get(`/admin/getStudentById/${id}`);
+        const res = await axiosInstance.get(`/admin/getStudentById/${id}`, {
+          withCredentials: true, // ✅ ensure admin JWT cookie is sent
+        });
         setStudentInfo(res.data.user);
       } catch (err) {
         console.error("Error fetching student profile:", err);
@@ -32,14 +34,17 @@ export default function StudentProfile() {
         setLoading(false);
       }
     };
-    getUser();  
+    getUser();
   }, [id]);
 
   // Fetch enrolled courses
   useEffect(() => {
     const getEnrolledCourses = async () => {
       try {
-        const res = await axiosInstance.get(`/admin/student-enrolled-courses/${id}`);
+        const res = await axiosInstance.get(
+          `/admin/student-enrolled-courses/${id}`,
+          { withCredentials: true } // ✅ send cookie
+        );
         setEnrolledCourses(res.data.enrolledCourses);
       } catch (err) {
         console.error("Error fetching enrolled courses:", err);
@@ -52,11 +57,15 @@ export default function StudentProfile() {
   const handleDelete = async () => {
     setDeleteLoading(true);
     try {
-      await axiosInstance.delete(`/admin/users/${id}`);
+      await axiosInstance.delete(`/admin/users/${id}`, {
+        withCredentials: true, // ✅ send cookie
+      });
       setShowDeleteModal(false);
-      navigate(-1); // Redirect after deletion
+      alert("Student deleted successfully");
+      navigate(-1); // redirect back
     } catch (err) {
       console.error("Failed to delete student:", err);
+      alert(err.response?.data?.message || "Failed to delete student");
     } finally {
       setDeleteLoading(false);
     }
@@ -64,7 +73,9 @@ export default function StudentProfile() {
 
   if (loading) {
     return (
-      <div className="text-center py-10 text-gray-500">Loading student profile...</div>
+      <div className="text-center py-10 text-gray-500">
+        Loading student profile...
+      </div>
     );
   }
 
@@ -80,9 +91,15 @@ export default function StudentProfile() {
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Confirm Deletion</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Confirm Deletion
+            </h2>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete <strong>{studentInfo.firstName} {studentInfo.lastName}</strong>? This action cannot be undone.
+              Are you sure you want to delete{" "}
+              <strong>
+                {studentInfo.firstName} {studentInfo.lastName}
+              </strong>
+              ? This action cannot be undone.
             </p>
             <div className="flex justify-end gap-4">
               <button
@@ -105,7 +122,14 @@ export default function StudentProfile() {
                       fill="none"
                       viewBox="0 0 24 24"
                     >
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
                       <path
                         className="opacity-75"
                         fill="currentColor"
@@ -168,13 +192,12 @@ export default function StudentProfile() {
                 </span>
               </div>
             </div>
-             <button
+            <button
               onClick={() => navigate(`/admin/account/${id}`)}
               className="mt-4 text-sm inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
             >
               View Account Settings
             </button>
-
           </div>
         </div>
 
@@ -205,7 +228,9 @@ export default function StudentProfile() {
                 );
               })
             ) : (
-              <p className="text-gray-500 col-span-full">No enrolled courses.</p>
+              <p className="text-gray-500 col-span-full">
+                No enrolled courses.
+              </p>
             )}
           </div>
         </section>
