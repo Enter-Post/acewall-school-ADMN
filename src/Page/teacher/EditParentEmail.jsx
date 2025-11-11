@@ -47,7 +47,7 @@ const EditParentEmail = ({ studentId, initialEmails = [], onUpdate }) => {
     if (!studentId) {
       toast.error("Student ID not provided.");
       return;
-    }
+    }z
 
     try {
       setLoading(true);
@@ -57,7 +57,7 @@ const EditParentEmail = ({ studentId, initialEmails = [], onUpdate }) => {
         { guardianEmails: validEmails },
         { withCredentials: true } // send admin cookie
       );
-
+      
       toast.success(res?.data?.message || "Emails updated successfully");
 
       // Update parent component's state
