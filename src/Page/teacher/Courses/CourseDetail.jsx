@@ -44,6 +44,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { set } from "lodash";
 import BackButton from "@/CustomComponent/BackButton";
+import CommentsRatingsToggle from "@/CustomComponent/teacher/CommentsRatingsToggle";
 
 export default function TeacherCourseDetails() {
   const { id } = useParams();
@@ -58,9 +59,7 @@ export default function TeacherCourseDetails() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
 
-  console.log(course?.quarter, "course")
-  console.log(quarters, "quarters")
-
+ 
   const handleDeleteAssessment = (assessmentID) => {
     setLoading(true);
     axiosInstance
@@ -82,7 +81,7 @@ export default function TeacherCourseDetails() {
         setCourse(res.data.course);
         setQuarters(res.data.course.quarter);
 
-        console.log("course data",res.data.course.enrollments)
+        console.log("course data", res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -91,7 +90,7 @@ export default function TeacherCourseDetails() {
 
   useEffect(() => {
     fetchCourseDetail();
-  }, [id]); 
+  }, [id]);
 
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
@@ -177,7 +176,7 @@ export default function TeacherCourseDetails() {
                 Prevthumbnail
                   ? Prevthumbnail
                   : course.thumbnail.url ||
-                  "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80"
+                    "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80"
               }
               alt="Course thumbnail"
               className="w-full rounded-md object-cover aspect-video"
@@ -230,20 +229,20 @@ export default function TeacherCourseDetails() {
                   Uploaded:{" "}
                   {course.createdAt
                     ? new Date(course.createdAt).toLocaleDateString("en-US", {
-                      year: "2-digit",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })
+                        year: "2-digit",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
                     : "N/A"}
                 </span>
                 <span>
                   Last Updated:{" "}
                   {course.updatedAt
                     ? new Date(course.updatedAt).toLocaleDateString("en-US", {
-                      year: "2-digit",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })
+                        year: "2-digit",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
                     : "N/A"}
                 </span>
               </div>
@@ -270,10 +269,6 @@ export default function TeacherCourseDetails() {
               Preview as a student
             </button>
 
-
-
-
-
             <button
               variant="outline"
               className="flex gap-2 items-center bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
@@ -283,10 +278,6 @@ export default function TeacherCourseDetails() {
               Gradebook
             </button>
 
-
-
-
-            
             <button
               variant="outline"
               className="flex gap-2 items-center bg-slate-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
@@ -351,7 +342,7 @@ export default function TeacherCourseDetails() {
             </div>
           </Link>
         ))}
-      
+
         {/* Final Assessment Cards */}
         {Array.isArray(course.Assessments) &&
           course.CourseAssessments.map((assessment) => (
@@ -361,37 +352,57 @@ export default function TeacherCourseDetails() {
               handleDeleteAssessment={handleDeleteAssessment}
             />
           ))}
-        {/* Rating */}
-        <RatingSection courseId={id} />
       </div>
+      {/* Comments & Ratings Section */}
+      <section className="mt-8">
+        <CommentsRatingsToggle
+          courseId={id}
+          role="admin"
+          onToggle={(enabled) =>
+            setCourse((prev) => ({ ...prev, commentsEnabled: enabled }))
+          }
+        />
 
-      <CommentSection id={id} />
+        {typeof course.commentsEnabled === "boolean" ? (
+          course.commentsEnabled ? (
+            <>
+              <RatingSection courseId={id} />
+              <CommentSection id={id} />
+            </>
+          ) : (
+            <div className="text-center text-gray-500 my-4">
+              Comments & Ratings are currently disabled for this course.
+            </div>
+          )
+        ) : (
+          <div className="text-center text-gray-500 my-4">
+            Loading comments & ratings status...
+          </div>
+        )}
+      </section>
+      <div className="flex justify-end space-x-4 mt-10">
+        {/* Archive Dialog */}
+        <ArchiveDialog course={course} fetchCourseDetail={fetchCourseDetail} />
 
-     <div className="flex justify-end space-x-4 mt-10">
-  {/* Archive Dialog */}
-  <ArchiveDialog course={course} fetchCourseDetail={fetchCourseDetail} />
+        {/* Delete Confirmation Modal */}
+        <DeleteCourseModal
+          confirmOpen={confirmOpen}
+          setConfirmOpen={setConfirmOpen}
+          fetchCourseDetail={fetchCourseDetail}
+          id={id}
+          setSuccessOpen={setSuccessOpen}
+        />
 
-  {/* Delete Confirmation Modal */}
-  <DeleteCourseModal
-    confirmOpen={confirmOpen}
-    setConfirmOpen={setConfirmOpen}
-    fetchCourseDetail={fetchCourseDetail}
-    id={id}
-    setSuccessOpen={setSuccessOpen}
-  />
-
-  {/* ✅ Success Confirmation Modal */}
-  <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
-    <DialogContent className="flex flex-col items-center justify-center text-center">
-      <CheckCircle className="w-12 h-12 text-green-500" />
-      <h3 className="text-lg font-semibold mt-2">
-        Course deleted successfully!
-      </h3>
-    </DialogContent>
-  </Dialog>
-</div>
-
-
+        {/* ✅ Success Confirmation Modal */}
+        <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
+          <DialogContent className="flex flex-col items-center justify-center text-center">
+            <CheckCircle className="w-12 h-12 text-green-500" />
+            <h3 className="text-lg font-semibold mt-2">
+              Course deleted successfully!
+            </h3>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }

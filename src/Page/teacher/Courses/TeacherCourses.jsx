@@ -19,6 +19,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 const TeacherCourses = () => {
   const [allCourses, setAllCourses] = useState([]);
@@ -27,11 +29,12 @@ const TeacherCourses = () => {
   const [filterTab, setFilterTab] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [reviewsEnabled, setReviewsEnabled] = useState(false); // global toggle state
+  const [toggleLoading, setToggleLoading] = useState(false); // toggle API loading
 
   const { user } = useContext(GlobalContext);
 
-  console.log(filterTab, "filterTab");
-
+  // Fetch courses
   const fetchCourses = async () => {
     setLoading(true);
     try {
@@ -53,14 +56,50 @@ const TeacherCourses = () => {
     }
   };
 
+  // Fetch current global reviews toggle
+  const fetchReviewsToggle = async () => {
+    try {
+      const res = await axiosInstance.get("/course/allupdated"); // fetching courses to get first course toggle
+      if (res.data.courses?.length > 0) {
+        // assuming toggle same for all courses; otherwise create separate API to fetch global toggle
+        setReviewsEnabled(res.data.courses[0].commentsEnabled ?? false);
+      }
+    } catch (err) {
+      console.error("Failed to fetch reviews toggle", err);
+    }
+  };
+
   useEffect(() => {
     const debounce = setTimeout(fetchCourses, 400);
     return () => clearTimeout(debounce);
   }, [searchQuery, filterTab, page]);
 
+  useEffect(() => {
+    fetchReviewsToggle();
+  }, []);
+
   const handleFilterChange = (status) => {
     setFilterTab(status);
-    setPage(1); // reset to first page on filter change
+    setPage(1);
+  };
+
+  // Handle global toggle
+  const handleReviewsToggle = async () => {
+    setToggleLoading(true);
+    try {
+      const res = await axiosInstance.patch("/admin/toggle-all-comments", {
+        enable: !reviewsEnabled,
+      });
+      setReviewsEnabled(res.data.commentsEnabled);
+      toast.success(res.data.message);
+      // Optionally refetch courses to update their individual commentsEnabled
+      fetchCourses();
+    } catch (err) {
+      console.error("Failed to update global toggle", err);
+      toast.error("Failed to update reviews toggle");
+    } finally {
+      setToggleLoading(false);
+    }
   };
 
   return (
@@ -70,7 +109,23 @@ const TeacherCourses = () => {
           All Courses
         </p>
 
-        <SearchBox query={searchQuery} setQuery={setSearchQuery} />
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6">
+          <SearchBox query={searchQuery} setQuery={setSearchQuery} />
+
+          {/* Global Reviews Toggle */}
+          <div className="flex items-center gap-3">
+            <span className="font-medium text-sm">Enable Reviews for All</span>
+            <Switch
+              checked={reviewsEnabled}
+              onCheckedChange={handleReviewsToggle}
+              disabled={toggleLoading}
+              className={`${reviewsEnabled ? "bg-green-500" : "bg-gray-300"}`}
+            />
+            {toggleLoading && (
+              <span className="text-sm text-gray-500">Updating...</span>
+            )}
+          </div>
+        </div>
 
         {/* Filter Dropdown */}
         <div className="relative px-6 flex items-center justify-start mb-10">
@@ -84,10 +139,7 @@ const TeacherCourses = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-44 z-50">
-              {[
-                { label: "Published", value: true },
-                { label: "Unpublished", value: false },
-              ].map((item) => (
+              {[{ label: "Published", value: true }, { label: "Unpublished", value: false }].map((item) => (
                 <DropdownMenuItem
                   key={item.value}
                   onClick={() => handleFilterChange(item.value)}
@@ -102,6 +154,7 @@ const TeacherCourses = () => {
         </div>
       </div>
 
+      {/* Courses Grid */}
       {loading ? (
         <div className="flex justify-center items-center py-10">
           <Loader className="animate-spin" />
@@ -131,9 +184,7 @@ const TeacherCourses = () => {
                       {course.category?.title || "Developments"}
                     </div>
                     <CardTitle>{course.courseTitle}</CardTitle>
-                    <p className="text-xs">
-                      Teacher: {course.createdby?.firstName}
-                    </p>
+                    <p className="text-xs">Teacher: {course.createdby?.firstName}</p>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
@@ -163,9 +214,7 @@ const TeacherCourses = () => {
                   key={pg}
                   onClick={() => setPage(pg)}
                   className={`w-9 h-9 rounded-full border flex items-center justify-center text-sm font-medium transition-colors ${
-                    pg === page
-                      ? "bg-acewall-main text-white"
-                      : "bg-white text-gray-700"
+                    pg === page ? "bg-acewall-main text-white" : "bg-white text-gray-700"
                   }`}
                 >
                   {pg}
@@ -173,9 +222,7 @@ const TeacherCourses = () => {
               ))}
               <Button
                 variant="outline"
-                onClick={() =>
-                  setPage((prev) => Math.min(totalPages, prev + 1))
-                }
+                onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
                 disabled={page === totalPages}
               >
                 <ArrowRight className="w-4 h-4 mr-2" />
