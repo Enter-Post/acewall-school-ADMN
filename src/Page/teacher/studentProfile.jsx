@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Calendar, Mail, School, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Calendar,
+  Mail,
+  School,
+  Trash2,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import {
   StudentProfileCourseCard,
@@ -9,9 +16,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import BackButton from "@/CustomComponent/BackButton";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import EditParentEmail from "./EditParentEmail";
-
+import ManageGuardianEmailNotifications from "@/CustomComponent/togelNotificationDialog";
 
 export default function StudentProfile() {
   const { id } = useParams();
@@ -29,7 +42,9 @@ export default function StudentProfile() {
     const getUser = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get(`/admin/getStudentById/${id}`, { withCredentials: true });
+        const res = await axiosInstance.get(`/admin/getStudentById/${id}`, {
+          withCredentials: true,
+        });
         setStudentInfo(res.data.user);
       } catch (err) {
         console.error("Error fetching student profile:", err);
@@ -44,7 +59,10 @@ export default function StudentProfile() {
   useEffect(() => {
     const getEnrolledCourses = async () => {
       try {
-        const res = await axiosInstance.get(`/admin/student-enrolled-courses/${id}`, { withCredentials: true });
+        const res = await axiosInstance.get(
+          `/admin/student-enrolled-courses/${id}`,
+          { withCredentials: true }
+        );
         setEnrolledCourses(res.data.enrolledCourses);
       } catch (err) {
         console.error("Error fetching enrolled courses:", err);
@@ -57,7 +75,9 @@ export default function StudentProfile() {
   const handleDelete = async () => {
     setDeleteLoading(true);
     try {
-      await axiosInstance.delete(`/admin/users/${id}`, { withCredentials: true });
+      await axiosInstance.delete(`/admin/users/${id}`, {
+        withCredentials: true,
+      });
       setShowDeleteModal(false);
       alert("Student deleted successfully");
       navigate(-1);
@@ -196,6 +216,7 @@ export default function StudentProfile() {
             >
               View Account Settings
             </button>
+            <ManageGuardianEmailNotifications studentId={id} />
           </div>
         </div>
 
@@ -206,19 +227,26 @@ export default function StudentProfile() {
             className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             Guardian Emails
-            {emailOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            {emailOpen ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
           </button>
 
           {emailOpen && (
             <ul className="mt-2 border rounded-md bg-gray-50 p-2 space-y-1 max-w-sm">
-              {studentInfo.guardianEmails && studentInfo.guardianEmails.length > 0 ? (
+              {studentInfo.guardianEmails &&
+              studentInfo.guardianEmails.length > 0 ? (
                 studentInfo.guardianEmails.map((email, index) => (
                   <li key={index} className="text-sm text-gray-700">
                     {email}
                   </li>
                 ))
               ) : (
-                <li className="text-sm text-gray-500">No guardian emails added yet.</li>
+                <li className="text-sm text-gray-500">
+                  No guardian emails added yet.
+                </li>
               )}
             </ul>
           )}
@@ -236,7 +264,10 @@ export default function StudentProfile() {
                 studentId={studentInfo._id}
                 initialEmails={studentInfo.guardianEmails || []}
                 onUpdate={(updatedEmails) =>
-                  setStudentInfo((prev) => ({ ...prev, guardianEmails: updatedEmails }))
+                  setStudentInfo((prev) => ({
+                    ...prev,
+                    guardianEmails: updatedEmails,
+                  }))
                 }
               />
             </DialogContent>
@@ -254,7 +285,9 @@ export default function StudentProfile() {
 
         {/* Enrolled Courses */}
         <section>
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Enrolled Courses</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Enrolled Courses
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {enrolledCourses.length > 0 ? (
               enrolledCourses.map((item, index) => {
@@ -268,7 +301,9 @@ export default function StudentProfile() {
                 );
               })
             ) : (
-              <p className="text-gray-500 col-span-full">No enrolled courses.</p>
+              <p className="text-gray-500 col-span-full">
+                No enrolled courses.
+              </p>
             )}
           </div>
         </section>
