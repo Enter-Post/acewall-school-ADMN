@@ -124,19 +124,24 @@ export default function ManageSBLScale() {
     const nextMin = minP - 10 >= 0 ? parseFloat((minP - 10).toFixed(2)) : 0;
     const nextMax = nextMin === 0 ? 0 : parseFloat((minP - 0.01).toFixed(2));
 
-    reset({ points: "", remarks: "", minPercentage: nextMin, maxPercentage: nextMax });
+    reset({
+      points: "",
+      remarks: "",
+      minPercentage: nextMin,
+      maxPercentage: nextMax,
+    });
   };
 
   // ✅ Correctly integrated backend API
   const handleSaveSBLScale = async () => {
     setIsLoading(true);
     try {
-      const res = await axiosInstance.post("/standardgrading/set", {
+      const res = await axiosInstance.post("StandardGrading/set", {
         scale: sblScale, // 👍 backend expects "scale"
       });
 
       toast.success(res.data.message);
-      navigate("/admin/standardbased");
+      navigate("/admin/Sbl");
     } catch (err) {
       toast.error(err.response?.data?.error || "Something went wrong");
     } finally {
@@ -158,7 +163,6 @@ export default function ManageSBLScale() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
         {/* Form */}
         <Card>
           <CardHeader>
@@ -166,10 +170,11 @@ export default function ManageSBLScale() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              
               {/* Points */}
               <div>
-                <label className="block text-sm font-medium">Points (1–4)</label>
+                <label className="block text-sm font-medium">
+                  Points (1–4)
+                </label>
                 <Input
                   type="number"
                   step="0.01"
@@ -177,7 +182,9 @@ export default function ManageSBLScale() {
                   className={errors.points ? "border-red-500" : ""}
                 />
                 {errors.points && (
-                  <p className="text-red-500 text-xs">{errors.points.message}</p>
+                  <p className="text-red-500 text-xs">
+                    {errors.points.message}
+                  </p>
                 )}
               </div>
 
@@ -190,14 +197,18 @@ export default function ManageSBLScale() {
                   className={errors.remarks ? "border-red-500" : ""}
                 />
                 {errors.remarks && (
-                  <p className="text-red-500 text-xs">{errors.remarks.message}</p>
+                  <p className="text-red-500 text-xs">
+                    {errors.remarks.message}
+                  </p>
                 )}
               </div>
 
               {/* Percentages */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-sm font-medium">Min Percentage</label>
+                  <label className="block text-sm font-medium">
+                    Min Percentage
+                  </label>
                   <Input
                     type="number"
                     step="0.01"
@@ -209,12 +220,16 @@ export default function ManageSBLScale() {
                     className={errors.minPercentage ? "border-red-500" : ""}
                   />
                   {errors.minPercentage && (
-                    <p className="text-red-500 text-xs">{errors.minPercentage.message}</p>
+                    <p className="text-red-500 text-xs">
+                      {errors.minPercentage.message}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium">Max Percentage</label>
+                  <label className="block text-sm font-medium">
+                    Max Percentage
+                  </label>
                   <Input
                     type="number"
                     step="0.01"
@@ -229,14 +244,19 @@ export default function ManageSBLScale() {
                     className={errors.maxPercentage ? "border-red-500" : ""}
                   />
                   {errors.maxPercentage && (
-                    <p className="text-red-500 text-xs">{errors.maxPercentage.message}</p>
+                    <p className="text-red-500 text-xs">
+                      {errors.maxPercentage.message}
+                    </p>
                   )}
                 </div>
               </div>
 
               {/* Buttons */}
               <div className="flex space-x-2 pt-2">
-                <Button type="submit" className="flex-1 bg-green-500 hover:bg-green-600">
+                <Button
+                  type="submit"
+                  className="flex-1 bg-green-500 hover:bg-green-600"
+                >
                   <Plus className="mr-2 h-4 w-4" /> Add SBL Range
                 </Button>
                 <Button type="button" variant="outline" onClick={handleReset}>
@@ -265,7 +285,6 @@ export default function ManageSBLScale() {
           <CardContent>
             {sblScale.length > 0 ? (
               <div className="space-y-3">
-
                 {/* Header */}
                 <div className="grid grid-cols-4 gap-2 font-medium text-sm text-gray-500 mb-2">
                   <div>Points</div>

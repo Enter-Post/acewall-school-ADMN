@@ -16,7 +16,7 @@ export default function SBLScaleForm() {
       setLoading(true);
       try {
         // UPDATED ENDPOINT
-        const res = await axiosInstance.get("standardgrading/get");
+        const res = await axiosInstance.get("standardGrading/get");
 
         // UPDATED DATA ACCESS
         setSblScale(res.data.scale || []);
@@ -77,7 +77,7 @@ export default function SBLScaleForm() {
                   </div>
 
                   <Badge className="font-bold text-sm px-3 py-1 bg-green-500 text-white">
-                    {item.points?.toFixed(2)}
+                    {item.points}
                   </Badge>
 
                   <div className="text-sm text-gray-700">{item.remarks}</div>
