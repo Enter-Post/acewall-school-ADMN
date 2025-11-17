@@ -62,7 +62,12 @@ const TeacherCourses = () => {
       const res = await axiosInstance.get("/course/allupdated"); // fetching courses to get first course toggle
       if (res.data.courses?.length > 0) {
         // assuming toggle same for all courses; otherwise create separate API to fetch global toggle
-        setReviewsEnabled(res.data.courses[0].commentsEnabled ?? false);
+        const allEnabled = res.data.courses.every(
+          (course) => course.commentsEnabled
+        );
+
+        console.log(allEnabled, "allEnabled");
+        setReviewsEnabled(allEnabled);
       }
     } catch (err) {
       console.error("Failed to fetch reviews toggle", err);
@@ -139,7 +144,10 @@ const TeacherCourses = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-44 z-50">
-              {[{ label: "Published", value: true }, { label: "Unpublished", value: false }].map((item) => (
+              {[
+                { label: "Published", value: true },
+                { label: "Unpublished", value: false },
+              ].map((item) => (
                 <DropdownMenuItem
                   key={item.value}
                   onClick={() => handleFilterChange(item.value)}
@@ -184,7 +192,9 @@ const TeacherCourses = () => {
                       {course.category?.title || "Developments"}
                     </div>
                     <CardTitle>{course.courseTitle}</CardTitle>
-                    <p className="text-xs">Teacher: {course.createdby?.firstName}</p>
+                    <p className="text-xs">
+                      Teacher: {course.createdby?.firstName}
+                    </p>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
@@ -214,7 +224,9 @@ const TeacherCourses = () => {
                   key={pg}
                   onClick={() => setPage(pg)}
                   className={`w-9 h-9 rounded-full border flex items-center justify-center text-sm font-medium transition-colors ${
-                    pg === page ? "bg-acewall-main text-white" : "bg-white text-gray-700"
+                    pg === page
+                      ? "bg-acewall-main text-white"
+                      : "bg-white text-gray-700"
                   }`}
                 >
                   {pg}
@@ -222,7 +234,9 @@ const TeacherCourses = () => {
               ))}
               <Button
                 variant="outline"
-                onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={page === totalPages}
               >
                 <ArrowRight className="w-4 h-4 mr-2" />

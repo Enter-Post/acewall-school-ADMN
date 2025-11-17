@@ -355,13 +355,13 @@ export default function TeacherCourseDetails() {
       </div>
       {/* Comments & Ratings Section */}
       <section className="mt-8">
-        <CommentsRatingsToggle
+        {/* <CommentsRatingsToggle
           courseId={id}
           role="admin"
           onToggle={(enabled) =>
             setCourse((prev) => ({ ...prev, commentsEnabled: enabled }))
           }
-        />
+        /> */}
 
         {typeof course.commentsEnabled === "boolean" ? (
           course.commentsEnabled ? (
