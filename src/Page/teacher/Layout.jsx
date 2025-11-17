@@ -91,14 +91,19 @@ const sideBarTabs = [
     name: "GPA Scale",
     icon: <ChartCandlestick />,
     path: "/admin/GPA",
+  },{
+    id: 11,
+    name: "Standard Based Learning ",
+    icon: <ChartCandlestick />,
+    path: "/admin/Sbl",
   },
   {
-    id: 11,
+    id: 12,
     name: "Spill the Tea",
     icon: <Coffee />,
     path: "/admin/social",
   },{
-    id: 12,
+    id: 13,
     name: "Newsletter",
     icon: <Mails />,
     path: "/admin/Newsletter",
