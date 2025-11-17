@@ -48,6 +48,8 @@ import ManageGpaScale from "./Page/teacher/GPA/createNewGPAScale";
 import BulkSignupPage from "./Page/teacher/BulkSignupPage";
 import CourseGradebook from "./CustomComponent/teacher/CourseGradebook";
 import SocialMain from "./Page/teacher/SocialMain";
+import SBLScaleForm from "./Page/teacher/Sbl/ManageSbl";
+import ManageSBLScale from "./Page/teacher/Sbl/CreateNewSBLScale";
 
 function App() {
   const { checkAuth, user, Authloading, socket, setSocket, setOnlineUser } =
@@ -114,7 +116,7 @@ function App() {
             <Route path="category" element={<Category />} />
             <Route path="subcategory/:categoryName" element={<Subcategory />} />
             <Route path="allStudent" element={<AllStudent />} />
-             <Route path="social" element={<SocialMain />} />
+            <Route path="social" element={<SocialMain />} />
             <Route path="newsletter" element={<Newsletter />} />
             <Route path="allTeacher" element={<AllTeacher />} />
             <Route path="studentProfile/:id" element={<StudentProfile />} />
@@ -148,6 +150,10 @@ function App() {
               <Route index element={<GpaScaleForm />} />
               <Route path="managegpascale" element={<ManageGpaScale />} />
             </Route>
+            <Route path="Sbl">
+              <Route index element={<SBLScaleForm />} />
+              <Route path="managesblscale" element={<ManageSBLScale />} />
+            </Route>
 
             <Route path="assessments">
               {/* <Route index element={<TeacherrAssessment />} /> */}
@@ -159,10 +165,7 @@ function App() {
               />
             </Route>
 
-            <Route
-              path="gradebook/:courseId"
-              element={<CourseGradebook />}
-            />
+            <Route path="gradebook/:courseId" element={<CourseGradebook />} />
 
             <Route path="courses">
               <Route index element={<TeacherCourses />} />
@@ -184,7 +187,6 @@ function App() {
                 path="assessment/:assessmentid"
                 element={<AssessmentPage />}
               />
-
 
               <Route path="stdPreview/:id" element={<StdPreview />} />
               <Route path="createCourses">
