@@ -73,8 +73,8 @@ export default function ManageSBLScale() {
     const maxP = parseFloat(data.maxPercentage);
     const remarks = data.remarks.trim();
 
-    if (newPoints < 1 || newPoints > 4) {
-      toast.error("Points must be between 1 and 4");
+    if (isNaN(newPoints)) {
+      toast.error("Points must be a valid number");
       return;
     }
 
@@ -132,12 +132,11 @@ export default function ManageSBLScale() {
     });
   };
 
-  // ✅ Correctly integrated backend API
   const handleSaveSBLScale = async () => {
     setIsLoading(true);
     try {
       const res = await axiosInstance.post("StandardGrading/set", {
-        scale: sblScale, // 👍 backend expects "scale"
+        scale: sblScale,
       });
 
       toast.success(res.data.message);
@@ -163,18 +162,14 @@ export default function ManageSBLScale() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Form */}
         <Card>
           <CardHeader>
             <CardTitle>Add New SBL Range</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Points */}
               <div>
-                <label className="block text-sm font-medium">
-                  Points (1–4)
-                </label>
+                <label className="block text-sm font-medium">Points</label>
                 <Input
                   type="number"
                   step="0.01"
@@ -182,13 +177,10 @@ export default function ManageSBLScale() {
                   className={errors.points ? "border-red-500" : ""}
                 />
                 {errors.points && (
-                  <p className="text-red-500 text-xs">
-                    {errors.points.message}
-                  </p>
+                  <p className="text-red-500 text-xs">{errors.points.message}</p>
                 )}
               </div>
 
-              {/* Remarks */}
               <div>
                 <label className="block text-sm font-medium">Remarks</label>
                 <Input
@@ -197,18 +189,13 @@ export default function ManageSBLScale() {
                   className={errors.remarks ? "border-red-500" : ""}
                 />
                 {errors.remarks && (
-                  <p className="text-red-500 text-xs">
-                    {errors.remarks.message}
-                  </p>
+                  <p className="text-red-500 text-xs">{errors.remarks.message}</p>
                 )}
               </div>
 
-              {/* Percentages */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-sm font-medium">
-                    Min Percentage
-                  </label>
+                  <label className="block text-sm font-medium">Min Percentage</label>
                   <Input
                     type="number"
                     step="0.01"
@@ -220,16 +207,12 @@ export default function ManageSBLScale() {
                     className={errors.minPercentage ? "border-red-500" : ""}
                   />
                   {errors.minPercentage && (
-                    <p className="text-red-500 text-xs">
-                      {errors.minPercentage.message}
-                    </p>
+                    <p className="text-red-500 text-xs">{errors.minPercentage.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium">
-                    Max Percentage
-                  </label>
+                  <label className="block text-sm font-medium">Max Percentage</label>
                   <Input
                     type="number"
                     step="0.01"
@@ -244,19 +227,13 @@ export default function ManageSBLScale() {
                     className={errors.maxPercentage ? "border-red-500" : ""}
                   />
                   {errors.maxPercentage && (
-                    <p className="text-red-500 text-xs">
-                      {errors.maxPercentage.message}
-                    </p>
+                    <p className="text-red-500 text-xs">{errors.maxPercentage.message}</p>
                   )}
                 </div>
               </div>
 
-              {/* Buttons */}
               <div className="flex space-x-2 pt-2">
-                <Button
-                  type="submit"
-                  className="flex-1 bg-green-500 hover:bg-green-600"
-                >
+                <Button type="submit" className="flex-1 bg-green-500 hover:bg-green-600">
                   <Plus className="mr-2 h-4 w-4" /> Add SBL Range
                 </Button>
                 <Button type="button" variant="outline" onClick={handleReset}>
@@ -276,16 +253,13 @@ export default function ManageSBLScale() {
           </CardContent>
         </Card>
 
-        {/* SBL Scale List */}
         <Card>
           <CardHeader>
             <CardTitle>Standard-Based Learning Scale</CardTitle>
           </CardHeader>
-
           <CardContent>
             {sblScale.length > 0 ? (
               <div className="space-y-3">
-                {/* Header */}
                 <div className="grid grid-cols-4 gap-2 font-medium text-sm text-gray-500 mb-2">
                   <div>Points</div>
                   <div>Percentage Range</div>
@@ -293,7 +267,6 @@ export default function ManageSBLScale() {
                   <div>Bar</div>
                 </div>
 
-                {/* Rows */}
                 {sblScale.map((item, index) => (
                   <div
                     key={index}
@@ -312,15 +285,12 @@ export default function ManageSBLScale() {
                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                       <div
                         className="bg-green-500 h-2.5 rounded-full"
-                        style={{
-                          width: `${item.maxPercentage - item.minPercentage}%`,
-                        }}
+                        style={{ width: `${item.maxPercentage - item.minPercentage}%` }}
                       ></div>
                     </div>
                   </div>
                 ))}
 
-                {/* Issues */}
                 {issues.length > 0 && (
                   <Alert className="mt-4 bg-yellow-50 border-yellow-200">
                     <AlertCircle className="h-4 w-4 text-yellow-600" />
@@ -337,7 +307,6 @@ export default function ManageSBLScale() {
                   </Alert>
                 )}
 
-                {/* Save */}
                 {isComplete && (
                   <>
                     <Alert className="mt-4 bg-green-50 border-green-200">
