@@ -54,7 +54,7 @@ const courseFormSchema = z.object({
   courseDescription: z
     .string()
     .min(5, { message: "Description must be at least 5 characters" })
-    .max(500, { message: "Description must be less than 500 characters" }),
+    .max(4000, { message: "Description must be less than 4000 characters" }),
   teachingPoints: z
     .array(
       z.object({
@@ -413,7 +413,7 @@ export default function EditCourse() {
                   className={`min-h-[100px] bg-gray-50  ${
                     errors.courseDescription ? "border border-red-500" : ""
                   }`}
-                  maxLength={500}
+                  maxLength={4000}
                   {...register("courseDescription")}
                 />
                 {errors.courseDescription && (

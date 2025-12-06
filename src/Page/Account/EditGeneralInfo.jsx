@@ -23,7 +23,6 @@ const formSchema = z.object({
   pronoun: z.string().optional(),
   gender: z.string().optional(),
   email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
   homeAddress: z.string().min(1, "Home address is required"),
   mailingAddress: z.string(),
 });
@@ -48,12 +47,12 @@ const EditGeneralInfo = () => {
       pronoun: "",
       gender: "",
       email: "",
-      phone: "",
+
       homeAddress: "",
       mailingAddress: "",
     },
   });
-
+console.log(errors, "errrrrrrors")
   const fetchUser = async () => {
     setLoading(true);
     try {
@@ -72,6 +71,8 @@ const EditGeneralInfo = () => {
         if (studentRes?.data?.user) {
           setUser(studentRes.data.user);
           fillForm(studentRes.data.user);
+          console.log(studentRes.data);
+          
         } else {
           throw new Error("Student not found");
         }

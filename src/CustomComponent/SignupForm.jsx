@@ -257,12 +257,8 @@ const SignupPage = () => {
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-4">
-            Already have an account?{" "}
-            <Link to="/login" className="text-green-600 hover:underline">
-              Login here
-            </Link>
-          </p>
+         
+         
         </div>
       </div>
     </>
