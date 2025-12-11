@@ -12,16 +12,26 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu";
 import {
   BookPlus,
   ChartBarStacked,
   CircleEllipsis,
+  Eye,
   Languages,
   LibraryBig,
   Loader,
   Pen,
   Play,
+  Settings,
   Users,
 } from "lucide-react";
 import { axiosInstance } from "@/lib/AxiosInstance";
@@ -59,7 +69,6 @@ export default function TeacherCourseDetails() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
 
- 
   const handleDeleteAssessment = (assessmentID) => {
     setLoading(true);
     axiosInstance
@@ -260,33 +269,44 @@ export default function TeacherCourseDetails() {
           <section className="flex justify-between items-center">
             <AssessmentCategoryDialog courseId={id} />
           </section>
-          <div className="flex justify-between items-center gap-4">
-            <button
-              variant="outline"
-              className="bg-green-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
-              onClick={() => navigate(`/admin/courses/stdPreview/${id}`)}
-            >
-              Preview as a student
-            </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition">
+                <Settings size={16} className="mr-2" />
+                Manage Course Actions
+              </Button>
+            </DropdownMenuTrigger>
 
-            <button
-              variant="outline"
-              className="flex gap-2 items-center bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
-              onClick={() => navigate(`/admin/gradebook/${id}`)}
+            <DropdownMenuContent
+              className="w-64 rounded-xl shadow-lg border border-gray-200 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+              align="start"
+              sideOffset={8}
             >
-              <BookPlus size={16} />
-              Gradebook
-            </button>
+              <DropdownMenuItem
+                onClick={() => navigate(`/admin/courses/stdPreview/${id}`)}
+                className="flex items-center gap-3 py-2.5 cursor-pointer"
+              >
+                <Eye size={18} className="text-green-600" />
+                Preview as a student
+              </DropdownMenuItem>
 
-            <button
-              variant="outline"
-              className="flex gap-2 items-center bg-slate-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
-              onClick={() => navigate(`/admin/courses/edit/${id}`)}
-            >
-              <Pen size={16} />
-              Edit Course Info
-            </button>
-          </div>
+              <DropdownMenuItem
+                onClick={() => navigate(`/admin/gradebook/${id}`)}
+                className="flex items-center gap-3 py-2.5 cursor-pointer"
+              >
+                <BookPlus size={18}  className="text-green-600" />
+                Gradebook
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => navigate(`/admin/courses/edit/${id}`)}
+                className="flex items-center gap-3 py-2.5 cursor-pointer"
+              >
+                <Pen size={18} className="text-green-600" />
+                <span>Edit Course Info</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">

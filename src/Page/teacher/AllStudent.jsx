@@ -20,6 +20,7 @@ const AllStudent = () => {
         `/admin/allStudent?page=${pageNumber}&limit=6&search=${searchQuery}`
       );
       const data = res.data;
+      console.log(data, "data");
 
       const rawStudents = Array.isArray(data.students) ? data.students : [];
 
