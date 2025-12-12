@@ -235,6 +235,8 @@ const StudentCard = ({ student }) => {
     </Card>
   );
 };
+
+
 const TeacherCard = ({ teacher, onViewProfile }) => (
   <Card className="overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white border border-gray-200">
     <CardContent className="p-6 flex flex-col items-center text-center">
